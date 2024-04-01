@@ -120,3 +120,18 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = { # 추가
+    'DEFAULT_PERMISSION_CLASSES': [
+       'rest_framework.permissions.IsAuthenticated',  #인증된 회원만 액세스 허용
+         'rest_framework.permissions.AllowAny',        
+                #모든 회원 액세스 허용
+    ],'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.UserRateThrottle',
+    ],
+    'DEFAULT_THROTTLE_RATES' : {
+        'user': '3/day',
+    },
+
+}
+

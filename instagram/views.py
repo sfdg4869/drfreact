@@ -8,6 +8,8 @@ from rest_framework.views import APIView
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView
 from rest_framework.renderers import TemplateHTMLRenderer
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsAuthorOrReadonly
 # Create your views here.
   
 # @api_view(['GET'])
@@ -17,13 +19,20 @@ from rest_framework.renderers import TemplateHTMLRenderer
 #     return Response(serializer.data)
 
 
-class PublicPostListAPIView(generics.ListCreateAPIView):
-    queryset = Post.objects.filter(is_public=True) 
+class PostViewSet(ModelViewSet):
+    queryset = Post.objects.all()
     serializer_class = PostSerializer
+    # authentication_classes = []  # 인증이 됨을 보장받을 수 있습니다.
+    permission_classes = [IsAuthenticated, IsAuthorOrReadonly]
 
 class PostViewSet(ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
+    
+    def perform_create(self, serializer):
+        author = self.request.user
+        ip = self.request.META['REMOTE_ADDR']
+        serializer.save(author=author, ip=ip)
 
     @action(detail=False, methods=['GET'])
     def public(self, requset):
