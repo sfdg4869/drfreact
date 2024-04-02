@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'instagram',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -122,16 +124,23 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = { # 추가
-    'DEFAULT_PERMISSION_CLASSES': [
-       'rest_framework.permissions.IsAuthenticated',  #인증된 회원만 액세스 허용
-         'rest_framework.permissions.AllowAny',        
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 'rest_framework.authentication.TokenAuthentication',     
                 #모든 회원 액세스 허용
-    ],'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.UserRateThrottle',
     ],
-    'DEFAULT_THROTTLE_RATES' : {
-        'user': '3/day',
-    },
+    'PAGE_SIZE' : 100,
+    'DEFAULT_PAGINATION_CLASS' : 'rest_framework.pagination.PageNumberPagination',
+    'DEFAULT_PERMISSION_CLASSES' : [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+    # ,'DEFAULT_THROTTLE_CLASSES': [
+    #     'rest_framework.throttling.UserRateThrottle',
+    # ],
+    # 'DEFAULT_THROTTLE_RATES' : {
+    #     'user': '3/day',
+    # },
 
 }
 
